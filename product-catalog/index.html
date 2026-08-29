@@ -22,84 +22,117 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#FAF7F2; --panel:#FFFFFF; --ink:#221D17; --ink-2:#5B5347; --ink-soft:#948A7A;
-  --line:#E9E1D3; --accent:#B0552F; --accent-2:#C99A5B; --sage:#77836C;
+  --line:#E9E1D3; --accent:#B0552F; --accent-2:#C99A5B; --sage:#77836C; --glow:#F4C572;
   --shadow:0 18px 40px -24px rgba(34,29,23,.35);
+  --shadow-lg:0 30px 70px -30px rgba(34,29,23,.45);
   --radius:14px;
   --sans:"Be Vietnam Pro","Segoe UI",system-ui,-apple-system,sans-serif;
+  --serif:"Fraunces","Georgia",serif;
 }
 *,*::before,*::after{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;font-weight:400}
 img{max-width:100%;display:block}
 a{color:inherit;text-decoration:none}
 button{font:inherit;cursor:pointer}
 .wrap{max-width:1120px;margin-inline:auto;padding-inline:clamp(16px,4vw,32px)}
 
+/* ============ REVEAL ON SCROLL ============ */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1);transition-delay:var(--d,0s)}
+.reveal.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  html{scroll-behavior:auto}
+  .reveal{opacity:1;transform:none}
+}
+
 /* ============ HEADER ============ */
-header.top{position:sticky;top:0;z-index:40;background:rgba(250,247,242,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+header.top{position:sticky;top:0;z-index:40;background:rgba(250,247,242,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);transition:box-shadow .3s ease}
+header.top.stuck{box-shadow:0 8px 24px -20px rgba(34,29,23,.5)}
 .top-in{display:flex;align-items:center;justify-content:space-between;gap:16px;height:64px}
 .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.05rem;letter-spacing:-.01em}
-.brand .logo{width:34px;height:34px;border-radius:9px;background:var(--accent);display:grid;place-items:center;flex:none}
+.brand .logo{width:34px;height:34px;border-radius:9px;background:var(--accent);display:grid;place-items:center;flex:none;box-shadow:0 6px 16px -6px rgba(176,85,47,.6)}
 .brand .logo svg{width:19px;height:19px;stroke:#fff}
 .top-cta{display:flex;gap:8px}
 .btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--panel);color:var(--ink);
   padding:10px 16px;border-radius:999px;font-size:.86rem;font-weight:600;transition:.2s;white-space:nowrap}
-.btn:hover{border-color:var(--accent);color:var(--accent)}
-.btn.solid{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-1px)}
+.btn.solid{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 10px 22px -12px rgba(176,85,47,.65)}
 .btn.solid:hover{background:#96431f;color:#fff}
 .btn svg{width:16px;height:16px}
 @media(max-width:720px){.top-cta{display:none}}   /* sticky bar dưới đáy đã thay thế */
 
 /* ============ HERO ============ */
-.hero{padding:clamp(30px,6vw,56px) 0 clamp(20px,4vw,30px);text-align:center}
-.hero h1{font-size:clamp(1.7rem,4.6vw,2.5rem);font-weight:800;letter-spacing:-.02em;margin:0 0 12px;max-width:20ch;margin-inline:auto}
-.hero p{color:var(--ink-2);max-width:52ch;margin:0 auto;font-size:1rem}
+.hero{position:relative;overflow:hidden;padding:clamp(46px,8vw,84px) 0 clamp(28px,5vw,40px);text-align:center}
+.hero::before{
+  content:"";position:absolute;inset:-30% -10% auto;height:560px;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(48% 60% at 24% 8%, rgba(176,85,47,.16), transparent 70%),
+    radial-gradient(40% 55% at 82% 4%, rgba(119,131,108,.14), transparent 68%);
+}
+.hero .wrap{position:relative;z-index:1}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--accent);font-weight:700;margin-bottom:18px}
+.hero-eyebrow .bulb{width:26px;height:26px;position:relative;flex:none}
+.hero-eyebrow .bulb svg{width:100%;height:100%;stroke:var(--accent)}
+.hero-eyebrow .bulb::after{content:"";position:absolute;inset:-6px;border-radius:50%;background:var(--glow);opacity:.55;
+  filter:blur(8px);z-index:-1;animation:glow 2.6s ease-in-out infinite}
+@keyframes glow{0%,100%{opacity:.35;transform:scale(.9)}50%{opacity:.7;transform:scale(1.12)}}
+.hero h1{font-family:var(--serif);font-size:clamp(2rem,5.2vw,3.4rem);font-weight:600;letter-spacing:-.02em;line-height:1.08;
+  margin:0 0 16px;max-width:17ch;margin-inline:auto}
+.hero h1 em{font-style:italic;color:var(--accent)}
+.hero p{color:var(--ink-2);max-width:52ch;margin:0 auto;font-size:1.02rem}
 
 /* ============ CATEGORY CHIPS ============ */
-.chips{display:flex;gap:8px;overflow-x:auto;padding:18px 0 6px;scrollbar-width:none}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:22px 0 6px;scrollbar-width:none}
 .chips::-webkit-scrollbar{display:none}
-.chip{flex:none;padding:9px 18px;border-radius:999px;border:1px solid var(--line);background:var(--panel);
-  font-size:.86rem;font-weight:600;color:var(--ink-2);transition:.2s}
-.chip:hover{border-color:var(--accent-2)}
+.chip{flex:none;display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:999px;border:1px solid var(--line);
+  background:var(--panel);font-size:.86rem;font-weight:600;color:var(--ink-2);transition:.2s}
+.chip:hover{border-color:var(--accent-2);transform:translateY(-1px)}
 .chip.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.chip .n{font-size:.76rem;opacity:.6;font-weight:500}
 
 /* ============ GRID ============ */
 .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;padding-block:22px 40px}
 @media(max-width:980px){.grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:720px){.grid{grid-template-columns:repeat(2,1fr);gap:12px}}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;cursor:pointer;
-  transition:transform .25s ease,box-shadow .25s ease;display:flex;flex-direction:column}
-.card:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+  transition:transform .3s cubic-bezier(.16,1,.3,1),box-shadow .3s ease;display:flex;flex-direction:column}
+.card:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg)}
 .card .ph{position:relative;aspect-ratio:1;background:var(--line);overflow:hidden}
-.card .ph img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
-.card:hover .ph img{transform:scale(1.06)}
+.card .ph img{width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.16,1,.3,1)}
+.card:hover .ph img{transform:scale(1.07)}
 .badge{position:absolute;top:10px;left:10px;background:var(--accent);color:#fff;font-size:.68rem;font-weight:700;
-  padding:4px 10px;border-radius:999px;letter-spacing:.03em}
+  padding:4px 10px;border-radius:999px;letter-spacing:.03em;box-shadow:0 6px 14px -6px rgba(176,85,47,.7)}
 .card .info{padding:13px 14px 15px;display:flex;flex-direction:column;gap:4px;flex:1}
 .card .name{font-size:.92rem;font-weight:600;line-height:1.35}
 .card .price{font-size:.95rem;font-weight:700;color:var(--accent);margin-top:auto;padding-top:6px}
 .card .price.contact{color:var(--sage)}
-.empty{grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--ink-soft)}
+.empty{grid-column:1/-1;text-align:center;padding:70px 20px;color:var(--ink-soft)}
+.empty svg{width:40px;height:40px;margin:0 auto 14px;stroke:var(--ink-soft);opacity:.6}
 
 /* ============ LIGHTBOX ============ */
 .lb{position:fixed;inset:0;z-index:100;display:none;background:rgba(20,16,10,.72);backdrop-filter:blur(4px);
   align-items:center;justify-content:center;padding:20px}
 .lb.open{display:flex}
 .lb-box{background:var(--panel);border-radius:18px;max-width:920px;width:100%;max-height:92vh;overflow:auto;
-  display:grid;grid-template-columns:1.1fr 1fr;box-shadow:0 40px 80px -30px rgba(0,0,0,.5)}
+  display:grid;grid-template-columns:1.1fr 1fr;box-shadow:0 40px 80px -30px rgba(0,0,0,.5);
+  opacity:0;transform:scale(.94) translateY(10px);transition:opacity .3s cubic-bezier(.16,1,.3,1),transform .3s cubic-bezier(.16,1,.3,1)}
+.lb.open .lb-box{opacity:1;transform:none}
 @media(max-width:720px){.lb-box{grid-template-columns:1fr}}
 .lb-img{background:var(--line);aspect-ratio:1;position:relative}
 .lb-img img{width:100%;height:100%;object-fit:cover}
 .lb-body{padding:26px 28px 28px;display:flex;flex-direction:column;gap:14px}
-.lb-body h2{margin:0;font-size:1.3rem;letter-spacing:-.01em}
+.lb-body h2{margin:0;font-family:var(--serif);font-weight:600;font-size:1.4rem;letter-spacing:-.01em}
 .lb-body .price{font-size:1.25rem;font-weight:800;color:var(--accent)}
 .lb-body .desc{color:var(--ink-2);font-size:.94rem}
 .lb-close{position:absolute;top:14px;right:14px;width:36px;height:36px;border-radius:50%;border:0;
-  background:rgba(255,255,255,.92);display:grid;place-items:center;box-shadow:0 4px 14px rgba(0,0,0,.2);z-index:2}
+  background:rgba(255,255,255,.92);display:grid;place-items:center;box-shadow:0 4px 14px rgba(0,0,0,.2);z-index:2;transition:.2s}
+.lb-close:hover{transform:rotate(90deg)}
 .lb-close svg{width:17px;height:17px}
 .lb-actions{margin-top:auto;display:flex;gap:10px;flex-wrap:wrap}
 .lb-actions .btn{flex:1;justify-content:center;padding:12px}
@@ -107,17 +140,22 @@ header.top{position:sticky;top:0;z-index:40;background:rgba(250,247,242,.92);bac
 /* ============ TRUST STRIP ============ */
 .trust{border-block:1px solid var(--line);background:var(--panel)}
 .trust .wrap{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
-.trust div{padding:20px 16px;text-align:center;border-left:1px solid var(--line);font-size:.86rem;color:var(--ink-2)}
+.trust div{padding:24px 18px;text-align:center;border-left:1px solid var(--line);font-size:.86rem;color:var(--ink-2);
+  display:flex;flex-direction:column;align-items:center;gap:8px}
 .trust div:first-child{border-left:0}
-.trust b{display:block;color:var(--ink);font-size:.95rem;margin-bottom:2px}
+.trust svg{width:22px;height:22px;stroke:var(--accent)}
+.trust b{display:block;color:var(--ink);font-size:.95rem}
 @media(max-width:640px){.trust .wrap{grid-template-columns:1fr}.trust div{border-left:0;border-top:1px solid var(--line)}.trust div:first-child{border-top:0}}
 
 /* ============ FOOTER / CONTACT ============ */
-footer{padding:40px 0 110px;text-align:center}
-footer h3{font-size:1.2rem;margin:0 0 8px}
-footer p{color:var(--ink-2);margin:0 0 18px}
+footer{padding:52px 0 110px;text-align:center;position:relative;overflow:hidden}
+footer::before{content:"";position:absolute;inset:auto -10% -40% ;height:300px;
+  background:radial-gradient(50% 60% at 50% 100%, rgba(176,85,47,.10), transparent 70%);pointer-events:none}
+footer .wrap{position:relative;z-index:1}
+footer h3{font-family:var(--serif);font-weight:600;font-size:1.5rem;margin:0 0 8px}
+footer p{color:var(--ink-2);margin:0 0 20px}
 .contact-grid{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
-.foot-note{margin-top:30px;font-size:.78rem;color:var(--ink-soft)}
+.foot-note{margin-top:34px;font-size:.78rem;color:var(--ink-soft)}
 
 /* ============ STICKY CONTACT BAR (chỉ hiện trên điện thoại) ============
    Trên desktop đã có nút Gọi/Zalo cố định trên header rồi, nên thanh này
@@ -135,7 +173,7 @@ footer p{color:var(--ink-2);margin:0 0 18px}
 </head>
 <body>
 
-<header class="top">
+<header class="top" id="topHeader">
   <div class="wrap top-in">
     <a class="brand" href="#top">
       <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 00-4 10.5c.7.7 1 1.3 1 2.5h6c0-1.2.3-1.8 1-2.5A6 6 0 0012 3z"/></svg></span>
@@ -150,29 +188,33 @@ footer p{color:var(--ink-2);margin:0 0 18px}
 
 <section class="hero" id="top">
   <div class="wrap">
-    <h1>Đèn trang trí cho mọi không gian sống</h1>
-    <p>Đèn bàn, đèn trần, đèn tường, đèn sàn — mẫu mới cập nhật thường xuyên. Xem mẫu ưng ý, nhắn Zalo là có người tư vấn ngay.</p>
+    <span class="hero-eyebrow reveal">
+      <span class="bulb"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 00-4 10.5c.7.7 1 1.3 1 2.5h6c0-1.2.3-1.8 1-2.5A6 6 0 0012 3z"/></svg></span>
+      Bộ sưu tập 2026
+    </span>
+    <h1 class="reveal" style="--d:.08s">Đèn trang trí cho <em>mọi không gian sống</em></h1>
+    <p class="reveal" style="--d:.16s">Đèn bàn, đèn trần, đèn tường, đèn sàn — mẫu mới cập nhật thường xuyên. Xem mẫu ưng ý, nhắn Zalo là có người tư vấn ngay.</p>
   </div>
 </section>
 
 <div class="wrap">
-  <div class="chips" id="chips"></div>
+  <div class="chips reveal" id="chips" style="--d:.22s"></div>
   <div class="grid" id="grid"></div>
 </div>
 
 <section class="trust">
   <div class="wrap">
-    <div><b>Giao hàng toàn quốc</b>Đóng gói cẩn thận, kiểm tra trước khi nhận</div>
-    <div><b>Đổi trả trong 3 ngày</b>Nếu lỗi do nhà sản xuất</div>
-    <div><b>Tư vấn qua Zalo</b>Phản hồi trong giờ hành chính</div>
+    <div class="reveal"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7zM6.5 20a2 2 0 100-4 2 2 0 000 4zM17.5 20a2 2 0 100-4 2 2 0 000 4z"/></svg><b>Giao hàng toàn quốc</b>Đóng gói cẩn thận, kiểm tra trước khi nhận</div>
+    <div class="reveal" style="--d:.08s"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg><b>Đổi trả trong 3 ngày</b>Nếu lỗi do nhà sản xuất</div>
+    <div class="reveal" style="--d:.16s"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.4 8.4 0 01-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.4 8.4 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg><b>Tư vấn qua Zalo</b>Phản hồi trong giờ hành chính</div>
   </div>
 </section>
 
 <footer>
   <div class="wrap">
-    <h3>Chưa thấy mẫu ưng ý?</h3>
-    <p>Nhắn trực tiếp, gửi ảnh không gian nhà bạn — mình tư vấn mẫu đèn phù hợp.</p>
-    <div class="contact-grid">
+    <h3 class="reveal">Chưa thấy mẫu ưng ý?</h3>
+    <p class="reveal" style="--d:.06s">Nhắn trực tiếp, gửi ảnh không gian nhà bạn — mình tư vấn mẫu đèn phù hợp.</p>
+    <div class="contact-grid reveal" style="--d:.12s">
       <a class="btn solid" href="https://zalo.me/0900000000" target="_blank" rel="noopener">Nhắn Zalo: 090 000 0000</a>
       <a class="btn" href="tel:0900000000">Gọi điện trực tiếp</a>
     </div>
@@ -225,9 +267,17 @@ footer p{color:var(--ink-2);margin:0 0 18px}
 
   function money(p){ return p ? p : 'Liên hệ'; }
 
+  /* reveal khi cuộn tới */
+  var io = ('IntersectionObserver' in window) ? new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  },{threshold:.12,rootMargin:'0px 0px -6% 0px'}) : null;
+  function observe(el){ io ? io.observe(el) : el.classList.add('in'); }
+  [].forEach.call(document.querySelectorAll('.reveal'), observe);
+
   function renderChips(){
     chipsBox.innerHTML = CATEGORIES.map(function(c){
-      return '<button class="chip'+(c.id===current?' on':'')+'" data-c="'+c.id+'">'+c.label+'</button>';
+      var count = c.id === 'all' ? PRODUCTS.length : PRODUCTS.filter(function(p){ return p.category === c.id; }).length;
+      return '<button class="chip'+(c.id===current?' on':'')+'" data-c="'+c.id+'">'+c.label+' <span class="n">'+count+'</span></button>';
     }).join('');
     [].forEach.call(chipsBox.children, function(btn){
       btn.addEventListener('click', function(){
@@ -241,11 +291,11 @@ footer p{color:var(--ink-2);margin:0 0 18px}
   function renderGrid(){
     var list = PRODUCTS.filter(function(p){ return current === 'all' || p.category === current; });
     if(!list.length){
-      grid.innerHTML = '<div class="empty">Chưa có sản phẩm trong mục này.</div>';
+      grid.innerHTML = '<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 00-4 10.5c.7.7 1 1.3 1 2.5h6c0-1.2.3-1.8 1-2.5A6 6 0 0012 3z"/></svg>Chưa có sản phẩm trong mục này.</div>';
       return;
     }
     grid.innerHTML = list.map(function(p){
-      return '<article class="card" data-id="'+p.id+'">'+
+      return '<article class="card reveal in" data-id="'+p.id+'">'+
         '<div class="ph">'+
           (p.badge ? '<span class="badge">'+p.badge+'</span>' : '') +
           '<img src="'+p.image+'" alt="'+p.name+'" loading="lazy">' +
@@ -283,6 +333,10 @@ footer p{color:var(--ink-2);margin:0 0 18px}
   document.getElementById('lbClose').addEventListener('click', closeLB);
   lb.addEventListener('click', function(e){ if(e.target === lb) closeLB(); });
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeLB(); });
+
+  /* đổ bóng header khi cuộn */
+  var header = document.getElementById('topHeader');
+  addEventListener('scroll', function(){ header.classList.toggle('stuck', scrollY > 8); }, {passive:true});
 
   renderChips();
   renderGrid();
