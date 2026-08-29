@@ -85,6 +85,26 @@ header.top.stuck{box-shadow:0 8px 24px -20px rgba(34,29,23,.5)}
 .btn svg{width:16px;height:16px}
 @media(max-width:720px){.top-cta{display:none}}   /* sticky bar dưới đáy đã thay thế */
 
+/* ============ THANH DANH MỤC (mega menu) ============ */
+.navbar{background:var(--ink);position:relative;z-index:35}
+.navbar .wrap{display:flex;align-items:stretch;gap:2px}
+.nav-link{display:flex;align-items:center;gap:6px;padding:13px 18px;color:rgba(250,247,242,.85);
+  font-size:.86rem;font-weight:600;transition:.2s;white-space:nowrap;cursor:pointer;border:0;background:transparent;font-family:var(--sans)}
+.nav-link:hover{color:#fff;background:rgba(255,255,255,.08)}
+.nav-link svg{width:13px;height:13px;transition:transform .2s}
+.nav-item{position:relative}
+.nav-item.open .nav-link svg{transform:rotate(180deg)}
+.nav-drop{position:absolute;top:100%;left:0;min-width:230px;background:var(--panel);border:1px solid var(--line);
+  border-radius:0 0 10px 10px;box-shadow:var(--shadow-lg);opacity:0;visibility:hidden;transform:translateY(-6px);
+  transition:.2s cubic-bezier(.16,1,.3,1);z-index:1;overflow:hidden}
+.nav-item.open .nav-drop{opacity:1;visibility:visible;transform:none}
+.nav-drop a{display:flex;justify-content:space-between;gap:10px;padding:11px 16px;font-size:.86rem;color:var(--ink-2);
+  border-bottom:1px solid var(--line);transition:.15s}
+.nav-drop a:last-child{border-bottom:0}
+.nav-drop a:hover{background:var(--accentSoft,#F6EBE0);color:var(--accent)}
+.nav-drop a span{color:var(--ink-soft);font-size:.78rem}
+@media(max-width:720px){.navbar .wrap{overflow-x:auto;scrollbar-width:none}.navbar .wrap::-webkit-scrollbar{display:none}}
+
 /* ============ HERO ============ */
 .hero{position:relative;overflow:hidden;padding:clamp(46px,8vw,84px) 0 clamp(28px,5vw,40px);text-align:center}
 .hero::before{
@@ -248,6 +268,19 @@ footer p{color:var(--ink-2);margin:0 0 20px}
   </div>
 </header>
 
+<nav class="navbar">
+  <div class="wrap">
+    <a class="nav-link" href="#top">Trang chủ</a>
+    <div class="nav-item" id="navProdItem">
+      <button class="nav-link" id="navProdBtn">Sản phẩm
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="nav-drop" id="navDrop"></div>
+    </div>
+    <a class="nav-link" href="#lienhe">Liên hệ</a>
+  </div>
+</nav>
+
 <section class="hero" id="top">
   <div class="wrap">
     <span class="hero-eyebrow reveal">
@@ -291,7 +324,7 @@ footer p{color:var(--ink-2);margin:0 0 20px}
   </div>
 </section>
 
-<footer>
+<footer id="lienhe">
   <div class="wrap">
     <h3 class="reveal">Chưa thấy mẫu ưng ý?</h3>
     <p class="reveal" style="--d:.06s">Nhắn trực tiếp, gửi ảnh không gian nhà bạn — mình tư vấn mẫu đèn phù hợp.</p>
@@ -368,19 +401,57 @@ footer p{color:var(--ink-2);margin:0 0 20px}
   function observe(el){ io ? io.observe(el) : el.classList.add('in'); }
   [].forEach.call(document.querySelectorAll('.reveal'), observe);
 
+  function catCount(id){
+    return id === 'all' ? PRODUCTS.length : PRODUCTS.filter(function(p){ return p.category === id; }).length;
+  }
+
+  function selectCategory(id, scroll){
+    current = id;
+    searchQuery = '';
+    document.getElementById('searchInput').value = '';
+    renderChips();
+    renderGrid();
+    if(scroll){
+      var target = document.getElementById('chips');
+      var y = target.getBoundingClientRect().top + scrollY - 90;
+      scrollTo({top:y, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+    }
+  }
+
   function renderChips(){
     chipsBox.innerHTML = CATEGORIES.map(function(c){
-      var count = c.id === 'all' ? PRODUCTS.length : PRODUCTS.filter(function(p){ return p.category === c.id; }).length;
-      return '<button class="chip'+(c.id===current?' on':'')+'" data-c="'+c.id+'">'+c.label+' <span class="n">'+count+'</span></button>';
+      return '<button class="chip'+(c.id===current?' on':'')+'" data-c="'+c.id+'">'+c.label+' <span class="n">'+catCount(c.id)+'</span></button>';
     }).join('');
     [].forEach.call(chipsBox.children, function(btn){
-      btn.addEventListener('click', function(){
-        current = btn.dataset.c;
-        renderChips();
-        renderGrid();
+      btn.addEventListener('click', function(){ selectCategory(btn.dataset.c, false); });
+    });
+  }
+
+  /* ============ MENU "SẢN PHẨM" TRÊN THANH ĐIỀU HƯỚNG ============ */
+  var navProdItem = document.getElementById('navProdItem');
+  var navDrop = document.getElementById('navDrop');
+  function renderNavDrop(){
+    navDrop.innerHTML = CATEGORIES.filter(function(c){ return c.id !== 'all'; }).map(function(c){
+      return '<a href="#chips" data-c="'+c.id+'">'+c.label+'<span>'+catCount(c.id)+'</span></a>';
+    }).join('');
+    [].forEach.call(navDrop.children, function(a){
+      a.addEventListener('click', function(e){
+        e.preventDefault();
+        selectCategory(a.dataset.c, true);
+        navProdItem.classList.remove('open');
       });
     });
   }
+  document.getElementById('navProdBtn').addEventListener('click', function(e){
+    e.stopPropagation();
+    navProdItem.classList.toggle('open');
+  });
+  document.addEventListener('click', function(e){
+    if(!navProdItem.contains(e.target)) navProdItem.classList.remove('open');
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') navProdItem.classList.remove('open');
+  });
 
   function renderGrid(){
     var q = normalize(searchQuery.trim());
@@ -470,6 +541,7 @@ footer p{color:var(--ink-2);margin:0 0 20px}
   renderChips();
   renderGrid();
   renderBestSellers();
+  renderNavDrop();
 })();
 </script>
 </body>
