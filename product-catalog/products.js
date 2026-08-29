@@ -1,40 +1,20 @@
 /* ============================================================
    DANH SÁCH SẢN PHẨM
    ------------------------------------------------------------
-   Đây là file DUY NHẤT cần sửa khi thêm/bớt/đổi sản phẩm.
-   Không cần biết code — chỉ cần copy một khối {...}, dán xuống
-   dưới, rồi đổi chữ bên trong dấu nháy "..." là xong.
-
-   Các trường:
-   - id       : mã riêng, không trùng nhau (viết liền không dấu)
-   - name     : tên sản phẩm
-   - category : phải khớp đúng một trong các mã ở CATEGORIES bên dưới
-   - price    : giá hiển thị dạng chữ. Để "" (rỗng) nếu muốn hiện "Liên hệ"
-   - desc     : mô tả ngắn 1-2 câu, hiện khi bấm phóng to ảnh
-   - image    : đường dẫn ảnh. Đặt ảnh vào thư mục images/ rồi ghi
-               "images/ten-file.jpg". Ảnh nên vuông (1:1), > 800px
-               để phóng to không bị vỡ nét.
-   - badge    : nhãn nhỏ tuỳ chọn, ví dụ "Mới", "Bán chạy". Để "" nếu không cần.
+   File này được xuất ra từ admin.html — mở admin.html để sửa
+   bằng giao diện thay vì sửa tay ở đây. Vẫn có thể sửa tay nếu
+   muốn: copy một khối {...}, dán xuống dưới, đổi chữ trong "...".
    ============================================================ */
 
 const CATEGORIES = [
-  { id: "all",   label: "Tất cả" },
+  { id: "all", label: "Tất cả" },
   { id: "table", label: "Đèn bàn" },
-  { id: "ceil",  label: "Đèn trần" },
-  { id: "wall",  label: "Đèn tường" },
+  { id: "ceil", label: "Đèn trần" },
+  { id: "wall", label: "Đèn tường" },
   { id: "floor", label: "Đèn sàn" },
 ];
 
 const PRODUCTS = [
-  {
-    id: "db-01",
-    name: "Đèn bàn gỗ sồi Minimal",
-    category: "table",
-    price: "450.000₫",
-    desc: "Thân gỗ sồi tự nhiên, chao vải lanh, ánh sáng vàng ấm 3000K. Phù hợp bàn làm việc và bàn trà.",
-    image: "images/placeholder-table-1.svg",
-    badge: "Bán chạy",
-  },
   {
     id: "db-02",
     name: "Đèn bàn kẹp Clip Light",
