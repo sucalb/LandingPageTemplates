@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Trang demo — chặn công cụ tìm kiếm thu thập cho tới khi có tên thương hiệu
+     và domain thật. Xoá dòng này khi đăng chính thức. -->
+<meta name="robots" content="noindex, nofollow">
 
 <!-- ============================================================
      SỬA 5 DÒNG DƯỚI ĐÂY TRƯỚC KHI ĐĂNG (quan trọng nhất trang!)
@@ -13,8 +16,8 @@
 <meta name="description" content="Catalog đèn trang trí: đèn bàn, đèn trần, đèn tường, đèn sàn. Xem mẫu, nhắn Zalo để đặt hàng.">
 <meta property="og:title" content="Đèn Trang Trí DP — Bừng sáng không gian Việt">
 <meta property="og:description" content="Catalog đèn trang trí: đèn bàn, đèn trần, đèn tường, đèn sàn. Xem mẫu, nhắn Zalo để đặt hàng.">
-<meta property="og:image" content="https://dentrangtridp.com/images/og-cover.jpg">
-<meta property="og:url" content="https://dentrangtridp.com/">
+<meta property="og:image" content="https://ten-mien-cua-ban.com/images/og-cover.jpg">
+<meta property="og:url" content="https://ten-mien-cua-ban.com/">
 <meta property="og:type" content="website">
 <!-- Ảnh og:image nên là ảnh ngang (tỉ lệ 1.91:1, ví dụ 1200x630px),
      đặt vào images/og-cover.jpg. Đây là ảnh to hiện trong khung chat,
@@ -49,6 +52,14 @@ button{font:inherit;cursor:pointer}
   html{scroll-behavior:auto}
   .reveal{opacity:1;transform:none}
 }
+
+/* ============ THANH LIÊN HỆ MỎNG TRÊN CÙNG ============ */
+.topbar{background:var(--ink);color:rgba(250,247,242,.92);font-size:.8rem}
+.topbar .wrap{display:flex;justify-content:flex-end;gap:22px;align-items:center;height:36px}
+.topbar a{display:flex;align-items:center;gap:6px;transition:.2s;white-space:nowrap}
+.topbar a:hover{color:var(--glow)}
+.topbar svg{width:13px;height:13px;flex:none}
+@media(max-width:520px){.topbar .wrap{justify-content:center;gap:16px}}
 
 /* ============ HEADER ============ */
 header.top{position:sticky;top:0;z-index:40;background:rgba(250,247,242,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);transition:box-shadow .3s ease}
@@ -86,6 +97,30 @@ header.top.stuck{box-shadow:0 8px 24px -20px rgba(34,29,23,.5)}
   margin:0 0 16px;max-width:17ch;margin-inline:auto}
 .hero h1 em{font-style:italic;color:var(--accent)}
 .hero p{color:var(--ink-2);max-width:52ch;margin:0 auto;font-size:1.02rem}
+
+/* ============ BANNER 2 ẢNH ============ */
+.banner{padding:0 0 clamp(30px,5vw,50px)}
+.banner .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.banner figure{margin:0;border-radius:16px;overflow:hidden;aspect-ratio:5/4;box-shadow:var(--shadow)}
+.banner img{width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.16,1,.3,1)}
+.banner figure:hover img{transform:scale(1.04)}
+@media(max-width:720px){.banner .grid2{grid-template-columns:1fr}}
+
+/* ============ BÁN CHẠY NHẤT ============ */
+.bestseller{padding:clamp(10px,2vw,20px) 0 clamp(30px,5vw,50px)}
+.bs-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:6px}
+.bs-head h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.5rem,3vw,2rem);letter-spacing:-.01em}
+.bs-head p{color:var(--ink-2);margin:4px 0 0;font-size:.92rem}
+.bs-row{display:flex;gap:16px;overflow-x:auto;padding:18px 2px 10px;scroll-snap-type:x proximity;scrollbar-width:none}
+.bs-row::-webkit-scrollbar{display:none}
+.bs-card{flex:none;width:220px;scroll-snap-align:start;background:var(--panel);border:1px solid var(--line);
+  border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:transform .25s ease,box-shadow .25s ease}
+.bs-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.bs-card .ph{position:relative;aspect-ratio:1;background:var(--line);overflow:hidden}
+.bs-card .ph img{width:100%;height:100%;object-fit:cover}
+.bs-card .info{padding:12px 13px 14px}
+.bs-card .name{font-size:.88rem;font-weight:600;line-height:1.35}
+.bs-card .price{font-size:.92rem;font-weight:700;color:var(--accent);margin-top:5px}
 
 /* ============ CATEGORY CHIPS ============ */
 .chips{display:flex;gap:8px;overflow-x:auto;padding:22px 0 6px;scrollbar-width:none}
@@ -157,21 +192,29 @@ footer p{color:var(--ink-2);margin:0 0 20px}
 .contact-grid{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
 .foot-note{margin-top:34px;font-size:.78rem;color:var(--ink-soft)}
 
-/* ============ STICKY CONTACT BAR (chỉ hiện trên điện thoại) ============
-   Trên desktop đã có nút Gọi/Zalo cố định trên header rồi, nên thanh này
-   chỉ cần thiết khi màn hình hẹp và header có thể cuộn mất khỏi tầm mắt. */
-.stickybar{display:none}
-@media(max-width:720px){
-  .stickybar{position:fixed;left:0;right:0;bottom:0;z-index:50;background:var(--panel);
-    border-top:1px solid var(--line);box-shadow:0 -10px 30px -18px rgba(0,0,0,.25);
-    padding:10px clamp(14px,4vw,24px);display:flex;gap:10px}
-  .stickybar .btn{flex:1;justify-content:center;padding:13px;font-size:.9rem}
-  footer{padding-bottom:24px}         /* bỏ khoảng chừa lớn vì sticky bar giờ chỉ chiếm chỗ trên mobile */
-  .grid{padding-bottom:24px}
-}
+/* ============ NÚT LIÊN HỆ NỔI (mọi kích thước màn hình) ============
+   Thay cho thanh full-width cũ — chỉ hiện sau khi cuộn qua khỏi hero,
+   tránh che nội dung và đỡ trùng lặp với nút trên header. */
+.float-contact{position:fixed;right:18px;bottom:18px;z-index:50;display:grid;gap:10px;
+  opacity:0;transform:translateY(12px) scale(.9);pointer-events:none;transition:.3s cubic-bezier(.16,1,.3,1)}
+.float-contact.show{opacity:1;transform:none;pointer-events:auto}
+.fab{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;box-shadow:0 12px 26px -10px rgba(34,29,23,.5);
+  border:0;transition:.2s}
+.fab:hover{transform:translateY(-2px) scale(1.05)}
+.fab svg{width:22px;height:22px}
+.fab.call{background:var(--ink);color:#fff}
+.fab.zalo{background:var(--accent);color:#fff}
+@media(max-width:720px){.fab{width:48px;height:48px}.fab svg{width:20px;height:20px}}
 </style>
 </head>
 <body>
+
+<div class="topbar">
+  <div class="wrap">
+    <a href="tel:0900000000"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6A19.8 19.8 0 012.1 4.2 2 2 0 014.1 2h3a2 2 0 012 1.7c.1 1 .3 2 .7 2.9a2 2 0 01-.4 2.1L8.1 10a16 16 0 006 6l1.3-1.3a2 2 0 012.1-.4c.9.4 1.9.6 2.9.7a2 2 0 011.7 2z"/></svg> 090 000 0000</a>
+    <a href="https://zalo.me/0900000000" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.4 8.4 0 01-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.4 8.4 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg> Zalo: 090 000 0000</a>
+  </div>
+</div>
 
 <header class="top" id="topHeader">
   <div class="wrap top-in">
@@ -194,6 +237,25 @@ footer p{color:var(--ink-2);margin:0 0 20px}
     </span>
     <h1 class="reveal" style="--d:.08s">Đèn trang trí cho <em>mọi không gian sống</em></h1>
     <p class="reveal" style="--d:.16s">Đèn bàn, đèn trần, đèn tường, đèn sàn — mẫu mới cập nhật thường xuyên. Xem mẫu ưng ý, nhắn Zalo là có người tư vấn ngay.</p>
+  </div>
+</section>
+
+<section class="banner">
+  <div class="wrap grid2">
+    <figure class="reveal"><img src="images/banner-scene-1.svg" alt="Không gian phòng khách với đèn trang trí" loading="lazy"></figure>
+    <figure class="reveal" style="--d:.1s"><img src="images/banner-scene-2.svg" alt="Không gian phòng ăn với đèn trang trí" loading="lazy"></figure>
+  </div>
+</section>
+
+<section class="bestseller" id="bestseller">
+  <div class="wrap">
+    <div class="bs-head reveal">
+      <div>
+        <h2>Bán chạy nhất</h2>
+        <p>Những mẫu được khách chọn nhiều nhất tháng này.</p>
+      </div>
+    </div>
+    <div class="bs-row" id="bsRow"></div>
   </div>
 </section>
 
@@ -222,10 +284,10 @@ footer p{color:var(--ink-2);margin:0 0 20px}
   </div>
 </footer>
 
-<!-- Thanh liên hệ dính đáy màn hình — chỉ hiện trên điện thoại -->
-<div class="stickybar" id="stickybar">
-  <a class="btn" href="tel:0900000000"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6A19.8 19.8 0 012.1 4.2 2 2 0 014.1 2h3a2 2 0 012 1.7c.1 1 .3 2 .7 2.9a2 2 0 01-.4 2.1L8.1 10a16 16 0 006 6l1.3-1.3a2 2 0 012.1-.4c.9.4 1.9.6 2.9.7a2 2 0 011.7 2z"/></svg>Gọi ngay</a>
-  <a class="btn solid" href="https://zalo.me/0900000000" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.4 8.4 0 01-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.4 8.4 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>Nhắn Zalo</a>
+<!-- Nút liên hệ nổi — hiện sau khi cuộn qua hero, mọi kích thước màn hình -->
+<div class="float-contact" id="floatContact">
+  <button class="fab call" id="fabCall" title="Gọi ngay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6A19.8 19.8 0 012.1 4.2 2 2 0 014.1 2h3a2 2 0 012 1.7c.1 1 .3 2 .7 2.9a2 2 0 01-.4 2.1L8.1 10a16 16 0 006 6l1.3-1.3a2 2 0 012.1-.4c.9.4 1.9.6 2.9.7a2 2 0 011.7 2z"/></svg></button>
+  <button class="fab zalo" id="fabZalo" title="Nhắn Zalo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.4 8.4 0 01-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.4 8.4 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg></button>
 </div>
 
 <!-- Lightbox xem chi tiết sản phẩm -->
@@ -334,12 +396,37 @@ footer p{color:var(--ink-2);margin:0 0 20px}
   lb.addEventListener('click', function(e){ if(e.target === lb) closeLB(); });
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeLB(); });
 
-  /* đổ bóng header khi cuộn */
+  /* ============ BÁN CHẠY NHẤT ============ */
+  var bsRow = document.getElementById('bsRow');
+  function renderBestSellers(){
+    var list = PRODUCTS.filter(function(p){ return p.badge === 'Bán chạy'; });
+    var section = document.getElementById('bestseller');
+    if(!list.length){ section.style.display = 'none'; return; }
+    bsRow.innerHTML = list.map(function(p){
+      return '<article class="bs-card" data-id="'+p.id+'">'+
+        '<div class="ph"><img src="'+p.image+'" alt="'+p.name+'" loading="lazy"></div>'+
+        '<div class="info"><div class="name">'+p.name+'</div><div class="price'+(p.price?'':' contact')+'">'+money(p.price)+'</div></div>'+
+      '</article>';
+    }).join('');
+    [].forEach.call(bsRow.children, function(card){
+      card.addEventListener('click', function(){ openLB(card.dataset.id); });
+    });
+  }
+
+  /* đổ bóng header + hiện nút liên hệ nổi khi cuộn */
   var header = document.getElementById('topHeader');
-  addEventListener('scroll', function(){ header.classList.toggle('stuck', scrollY > 8); }, {passive:true});
+  var floatContact = document.getElementById('floatContact');
+  addEventListener('scroll', function(){
+    header.classList.toggle('stuck', scrollY > 8);
+    floatContact.classList.toggle('show', scrollY > 420);
+  }, {passive:true});
+
+  document.getElementById('fabCall').addEventListener('click', function(){ location.href = 'tel:' + PHONE; });
+  document.getElementById('fabZalo').addEventListener('click', function(){ window.open(ZALO_LINK, '_blank'); });
 
   renderChips();
   renderGrid();
+  renderBestSellers();
 })();
 </script>
 </body>

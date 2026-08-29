@@ -51,7 +51,7 @@ const PRODUCTS = [
     price: "620.000₫",
     desc: "Khung kim loại sơn tĩnh điện, dây treo chỉnh được độ cao 40–150cm.",
     image: "images/placeholder-ceil-1.svg",
-    badge: "Mới",
+    badge: "Bán chạy",
   },
   {
     id: "dt-02",
@@ -78,7 +78,7 @@ const PRODUCTS = [
     price: "890.000₫",
     desc: "Thân cao 155cm, chân đế gỗ tần bì chắc chắn, chao vải có thể tháo giặt.",
     image: "images/placeholder-floor-1.svg",
-    badge: "Mới",
+    badge: "Bán chạy",
   },
   {
     id: "df-02",
