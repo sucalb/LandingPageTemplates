@@ -1,0 +1,5 @@
+# Cấu hình này ghi đè mọi cấu hình gõ tay trên dashboard Netlify —
+# đặt ở đây để khỏi lo gõ nhầm ô Base/Publish/Functions directory nữa.
+[build]
+  publish = "product-catalog"
+  functions = "netlify/functions"
