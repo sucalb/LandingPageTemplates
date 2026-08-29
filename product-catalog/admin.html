@@ -161,16 +161,19 @@ h1,h2,h3{margin:0}
   <span class="sub">Đèn Trang Trí DP</span>
   <span class="spacer"></span>
   <span class="sizewarn" id="sizewarn"></span>
-  <button class="btn" id="btnReset">Khôi phục từ file gốc</button>
-  <button class="btn" id="btnExport">⬇ Tải xuống products.js</button>
-  <button class="btn solid" id="btnPublish">☁ Lưu &amp; đăng lên trang thật</button>
+  <button class="btn solid" id="btnPublish" style="font-size:.92rem;padding:11px 20px">☁ Lưu &amp; đăng lên trang</button>
+  <button class="iconbtn" id="btnMore" title="Tuỳ chọn khác"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="12" cy="19" r="1.2"/></svg></button>
+</div>
+<div id="moreBar" style="display:none;background:#fff;border-bottom:1px solid var(--line);padding:10px clamp(14px,3vw,26px);gap:10px;align-items:center;font-size:.8rem;color:var(--ink-soft)">
+  <span>Dành cho kỹ thuật, Đạt không cần dùng:</span>
+  <button class="btn sm" id="btnReset">Khôi phục từ file gốc</button>
+  <button class="btn sm" id="btnExport">⬇ Tải xuống products.js</button>
 </div>
 
 <div class="banner">
   <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg>
-  <div>Mọi thay đổi ở đây chỉ lưu tạm trên máy này cho tới khi bạn bấm
-  <b>"Lưu &amp; đăng lên trang thật"</b> (cần mật khẩu) — lúc đó trang khách xem sẽ tự cập nhật sau khoảng 20-30 giây.
-  Nút <b>"Tải xuống products.js"</b> vẫn còn để dự phòng nếu muốn tự thay file thủ công.</div>
+  <div>Sửa xong, bấm nút xanh <b>"Lưu &amp; đăng lên trang"</b> ở góc trên, nhập mật khẩu — vậy là xong.
+  Trang khách xem sẽ tự đổi theo sau khoảng 20-30 giây, không cần làm gì thêm.</div>
 </div>
 
 <div class="layout">
@@ -733,56 +736,101 @@ h1,h2,h3{margin:0}
   var publishPw = document.getElementById('publishPw');
   var publishMsg = document.getElementById('publishMsg');
   var publishGo = document.getElementById('publishGo');
-  var cachedPassword = ''; /* chỉ giữ trong bộ nhớ của lần mở trang này, không lưu ổ đĩa */
+  var PW_KEY = 'dpcatalog_admin_pw';
 
-  function openPublish(){
-    publishMsg.textContent = '';
-    publishMsg.style.color = '';
-    publishPw.value = cachedPassword;
+  function rememberedPassword(){
+    try{ return localStorage.getItem(PW_KEY) || ''; }catch(e){ return ''; }
+  }
+  function rememberPassword(pw){
+    try{ localStorage.setItem(PW_KEY, pw); }catch(e){}
+  }
+  function forgetPassword(){
+    try{ localStorage.removeItem(PW_KEY); }catch(e){}
+  }
+
+  function openPublish(prefillWrong){
+    publishMsg.textContent = prefillWrong ? 'Mật khẩu đã lưu không đúng nữa, nhập lại giúp mình.' : '';
+    publishMsg.style.color = prefillWrong ? 'var(--bad)' : '';
+    publishPw.value = '';
     publishBg.classList.add('open');
     setTimeout(function(){ publishPw.focus(); }, 50);
   }
   function closePublish(){ publishBg.classList.remove('open'); }
-  document.getElementById('btnPublish').addEventListener('click', openPublish);
   document.getElementById('publishClose').addEventListener('click', closePublish);
   document.getElementById('publishCancel').addEventListener('click', closePublish);
   publishBg.addEventListener('click', function(e){ if(e.target === publishBg) closePublish(); });
   publishPw.addEventListener('keydown', function(e){ if(e.key === 'Enter') publishGo.click(); });
 
-  publishGo.addEventListener('click', function(){
-    var pw = publishPw.value;
-    if(!pw){ publishMsg.style.color = 'var(--bad)'; publishMsg.textContent = 'Nhập mật khẩu trước đã.'; return; }
-    publishGo.disabled = true;
-    publishGo.textContent = 'Đang lưu...';
-    publishMsg.style.color = '';
-    publishMsg.textContent = 'Đang gửi lên GitHub...';
+  var btnPublish = document.getElementById('btnPublish');
+  function doPublish(pw, opts){
+    opts = opts || {};
+    if(opts.button){ opts.button.disabled = true; opts.button.dataset.origText = opts.button.textContent; opts.button.textContent = 'Đang lưu...'; }
+    if(opts.onProgress) opts.onProgress('Đang gửi lên trang thật...');
 
-    fetch('/.netlify/functions/save-products', {
+    return fetch('/.netlify/functions/save-products', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ password: pw, content: buildProductsJs() })
     })
       .then(function(r){ return r.json().then(function(data){ return { status: r.status, data: data }; }); })
       .then(function(res){
-        publishGo.disabled = false;
-        publishGo.textContent = 'Xác nhận & lưu';
+        if(opts.button){ opts.button.disabled = false; opts.button.textContent = opts.button.dataset.origText; }
         if(res.data && res.data.ok){
-          cachedPassword = pw;
-          publishMsg.style.color = 'var(--good)';
-          publishMsg.textContent = 'Đã lưu! Trang thật sẽ cập nhật sau khoảng 20-30 giây.';
-          toast('Đã đăng lên trang thật.');
-          setTimeout(closePublish, 1400);
-        } else {
-          publishMsg.style.color = 'var(--bad)';
-          publishMsg.textContent = (res.data && res.data.error) || ('Lỗi không xác định (mã ' + res.status + ').');
+          rememberPassword(pw);
+          toast('Đã đăng lên trang thật — khách sẽ thấy sau khoảng 20-30 giây.');
+          if(opts.onSuccess) opts.onSuccess();
+        } else if(res.status === 401){
+          forgetPassword();
+          if(opts.onWrongPassword) opts.onWrongPassword();
+        } else if(opts.onError){
+          opts.onError((res.data && res.data.error) || ('Lỗi không xác định (mã ' + res.status + ').'));
         }
       })
       .catch(function(e){
-        publishGo.disabled = false;
-        publishGo.textContent = 'Xác nhận & lưu';
-        publishMsg.style.color = 'var(--bad)';
-        publishMsg.textContent = 'Không kết nối được tới server: ' + e.message;
+        if(opts.button){ opts.button.disabled = false; opts.button.textContent = opts.button.dataset.origText; }
+        if(opts.onError) opts.onError('Không kết nối được tới server: ' + e.message);
       });
+  }
+
+  /* Bấm nút chính: nếu máy đã nhớ mật khẩu thì lưu thẳng, không hỏi lại.
+     Chỉ hỏi mật khẩu ở lần đầu, hoặc khi mật khẩu cũ không còn đúng. */
+  btnPublish.addEventListener('click', function(){
+    var remembered = rememberedPassword();
+    if(!remembered){ openPublish(false); return; }
+    doPublish(remembered, {
+      button: btnPublish,
+      onWrongPassword: function(){ openPublish(true); },
+      onError: function(msg){ toast(msg); }
+    });
+  });
+
+  publishGo.addEventListener('click', function(){
+    var pw = publishPw.value;
+    if(!pw){ publishMsg.style.color = 'var(--bad)'; publishMsg.textContent = 'Nhập mật khẩu trước đã.'; return; }
+    publishMsg.style.color = '';
+    doPublish(pw, {
+      button: publishGo,
+      onProgress: function(msg){ publishMsg.style.color = ''; publishMsg.textContent = msg; },
+      onSuccess: function(){
+        publishMsg.style.color = 'var(--good)';
+        publishMsg.textContent = 'Đã lưu! Trang thật sẽ cập nhật sau khoảng 20-30 giây.';
+        setTimeout(closePublish, 1400);
+      },
+      onWrongPassword: function(){
+        publishMsg.style.color = 'var(--bad)';
+        publishMsg.textContent = 'Sai mật khẩu.';
+      },
+      onError: function(msg){
+        publishMsg.style.color = 'var(--bad)';
+        publishMsg.textContent = msg;
+      }
+    });
+  });
+
+  /* nút "..." mở/đóng hàng tuỳ chọn kỹ thuật (khôi phục, tải file) */
+  document.getElementById('btnMore').addEventListener('click', function(){
+    var bar = document.getElementById('moreBar');
+    bar.style.display = bar.style.display === 'flex' ? 'none' : 'flex';
   });
 
   /* ============ KHỞI CHẠY ============ */
